@@ -1,0 +1,26 @@
+services:
+  # Service 1: Database (PostgreSQL)
+  db_server:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user_admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: vudatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Service 2: Ứng dụng Flask của Vũ
+  web_app:
+    build: .
+    ports:
+      - "8080:5000" # Truy cập máy thật qua localhost:8080
+    environment:
+      DB_HOST: db_server
+      DB_NAME: vudatabase
+      DB_USER: user_admin
+      DB_PASS: password123
+    depends_on:
+      - db_server
+
+volumes:
+  postgres_data:
