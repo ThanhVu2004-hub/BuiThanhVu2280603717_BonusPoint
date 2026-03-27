@@ -13,57 +13,88 @@ def get_db_connection():
     )
     return conn
 
-# Giao diện HTML được viết trực tiếp vào đây với Bootstrap 5
+# GIAO DIỆN PREMIUM DARK DASHBOARD
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Docker Assignment - {{ name }}</title>
+    <title>DevOps Dashboard - {{ name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
-        .main-card { max-width: 600px; margin: 80px auto; border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .status-badge { font-size: 0.9rem; padding: 8px 15px; border-radius: 20px; }
-        .header-bg { background: linear-gradient(135deg, #0d6efd, #0b5ed7); color: white; border-radius: 15px 15px 0 0; padding: 30px; }
+        :root { --bg: #0f172a; --card-bg: #1e293b; --accent: #38bdf8; --text-main: #f1f5f9; }
+        body { background-color: var(--bg); color: var(--text-main); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+        .glass-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(10px); transition: transform 0.3s ease; }
+        .glass-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .status-pulse { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; position: relative; }
+        .pulse-green { background: #22c55e; box-shadow: 0 0 10px #22c55e; animation: pulse 2s infinite; }
+        .pulse-red { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .hero-title { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px; }
+        .info-label { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card main-card">
-            <div class="header-bg text-center">
-                <h2 class="mb-0">DOCKER ASSIGNMENT</h2>
-            </div>
-            <div class="card-body p-4">
-                <div class="mb-4">
-                    <label class="text-muted small text-uppercase fw-bold">Sinh viên thực hiện</label>
-                    <h3 class="text-dark fw-bold">{{ name }}</h3>
-                    <p class="text-muted">MSSV: {{ mssv }}</p>
-                </div>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="hero-title display-4 mb-2">DevOps Control Panel</h1>
+            <p class="text-secondary">Quản lý và Giám sát Container Real-time</p>
+        </div>
 
-                <div class="mb-4">
-                    <label class="text-muted small text-uppercase fw-bold">Trạng thái hệ thống</label>
-                    <div class="mt-2">
-                        {% if "thành công" in status %}
-                            <span class="status-badge bg-success-subtle text-success fw-bold border border-success">● {{ status }}</span>
-                        {% else %}
-                            <span class="status-badge bg-danger-subtle text-danger fw-bold border border-danger">● {{ status }}</span>
-                        {% endif %}
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-6">
+                <div class="glass-card p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0"><i class="fas fa-user-circle me-2 text-info"></i>Thông tin Sinh viên</h5>
+                        <span class="badge bg-primary rounded-pill">Version 2.0</span>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            <p class="info-label mb-1">Họ và Tên</p>
+                            <h5 class="fw-bold">{{ name }}</h5>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="info-label mb-1">Mã số Sinh viên</p>
+                            <h5 class="fw-bold text-accent">{{ mssv }}</h5>
+                        </div>
+                    </div>
+                    <hr class="my-4 opacity-10">
+                    <div class="d-flex align-items-center p-3 rounded-4 bg-dark bg-opacity-25 border border-secondary border-opacity-25">
+                        <div class="flex-shrink-0">
+                            <div class="status-pulse {% if 'thành công' in status %}pulse-green{% else %}pulse-red{% endif %}"></div>
+                        </div>
+                        <div class="flex-grow-1 ms-2 small">
+                            <strong>Trạng thái DB:</strong> <span class="text-secondary">{{ status }}</span>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="p-3 bg-light rounded-3 border">
-                    <p class="mb-0 small text-secondary">
-                        <strong>Hướng dẫn:</strong> Sử dụng Postman để gửi <code>POST</code> đến 
-                        <span class="badge bg-dark">/update</span> để cập nhật thông tin.
+            <div class="col-lg-4">
+                <div class="glass-card p-4 h-100">
+                    <h5 class="mb-4"><i class="fas fa-code me-2 text-warning"></i>API Endpoint</h5>
+                    <div class="mb-3">
+                        <p class="info-label mb-2">POST Request</p>
+                        <div class="bg-black bg-opacity-50 p-3 rounded-3 family-monospace small text-accent">
+                            <code>/update</code>
+                        </div>
+                    </div>
+                    <p class="small text-secondary mt-3">
+                        Gửi dữ liệu JSON qua Postman để cập nhật thông tin hệ thống ngay lập tức.
                     </p>
+                    <button class="btn btn-outline-info w-100 btn-sm mt-2 rounded-pill">Copy Endpoint</button>
                 </div>
             </div>
-            <div class="card-footer text-center bg-white border-0 pb-4">
-                <small class="text-muted">© 2026 - {{ name }} | Deployed with GitHub Actions</small>
-            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <p class="small text-secondary">
+                <i class="fab fa-github me-1"></i> Deployed by <strong>GitHub Actions</strong> 
+                <span class="mx-2">|</span>
+                <i class="fab fa-docker me-1"></i> Powered by <strong>Docker Desktop</strong>
+            </p>
         </div>
     </div>
 </body>
@@ -74,25 +105,14 @@ HTML_TEMPLATE = """
 def hello():
     name = "Bùi Thanh Vũ" 
     mssv = "2280603717"
-    
     try:
         conn = get_db_connection()
-        db_status = "Kết nối CSDL thành công!"
+        db_status = "Đã kết nối cơ sở dữ liệu"
         conn.close()
     except Exception as e:
-        db_status = f"Lỗi kết nối CSDL: {str(e)[:50]}..."
+        db_status = f"Lỗi: {str(e)[:45]}..."
 
     return render_template_string(HTML_TEMPLATE, name=name, mssv=mssv, status=db_status)
-
-@app.route('/update', methods=['POST'])
-def update_info():
-    data = request.json
-    new_name = data.get('name', 'N/A')
-    return jsonify({
-        "status": "success",
-        "message": "Cập nhật thông tin thành công (Simulated)",
-        "new_name": new_name
-    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
