@@ -1,9 +1,22 @@
+name: Deploy to Server
+
+# 1. Kích hoạt mỗi khi bạn push code lên nhánh main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 2. Bước thực hiện gọi Webhook để deploy
       - name: Triển khai lên DevOps Classroom
         run: |
           REPO="thanhvu2k4/buithanhvu_bonuspoint"
           CONTAINER_PORT=80
           RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST "${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=1&container_port=$CONTAINER_PORT&strict_container_port=0")
-          BODY=$(echo "$RESPONSE" | sed "$d")
+          BODY=$(echo "$RESPONSE" | sed '$d')
           CODE=$(echo "$RESPONSE" | tail -n1)
           echo "Webhook HTTP: $CODE"
           if [ "$CODE" -lt 200 ] || [ "$CODE" -ge 300 ]; then
